@@ -1,4 +1,4 @@
-# docker build . -t opus-filter:0.0.2
+docker build . -t opus-filter:0.0.2
 
 NVIDIA_DOCKER_INSTALLED="$(apt list --installed | grep nvidia-docker)"
 
