@@ -1,0 +1,63 @@
+common:
+  default_n_jobs: 3
+steps:
+  - type: remove_duplicates
+    parameters:
+      inputs:
+      - data/Example.en-ru.en
+      - data/Example.en-ru.ru
+      outputs:
+      - results/NoDuplicates.en-ru.en
+      - results/NoDuplicates.en-ru.ru
+  - type: filter
+    parameters:
+      inputs:
+      - results/NoDuplicates.en-ru.en
+      - results/NoDuplicates.en-ru.ru
+      outputs:
+      - results/Filtered.en-ru.en
+      - results/Filtered.en-ru.ru
+      filters:
+          # Length filters
+        - LengthFilter:
+            unit: word
+            min_length: 1
+            max_length: 100
+
+        - LengthRatioFilter:
+            unit: word
+            threshold: 3
+
+        - LongWordFilter:
+            threshold: 50
+
+        - AlphabetRatioFilter:
+            threshold: 0.8
+        
+        # Script and language identification filters
+        - CharacterScoreFilter:
+            scripts: [Latin, Cyrillic]
+            thresholds: [0.8, 1]
+        
+        - LanguageIDFilter:
+            languages: [en, ru]
+        
+        # Special character and similarity filters
+        - HtmlTagFilter: {}
+        
+        - TerminalPunctuationFilter:
+            threshold: -2
+        
+        - SimilarityFilter:
+            threshold: 0.6
+
+        # TODO: figure why not working 
+        # Sentence embedding filters
+        # - SentenceEmbeddingFilter:
+        #     languages: [en, ru]
+        #     threshold: 0.5
+        
+        #  custom filters
+        - BERTCosineSimilarity:
+            threshold: 0.6
+          module: customfilters
